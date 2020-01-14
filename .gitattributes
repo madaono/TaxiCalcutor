@@ -1,0 +1,12 @@
+* text auto
+
+*.cs text
+*.fsx text
+*.targets text
+*.sh text eol=lf
+
+*.exe binary
+*.png binary
+*.jpg binary
+*.bak binary
+*.tff binary

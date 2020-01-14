@@ -1,0 +1,12 @@
+/.vs/
+/.idea/
+.vscode/
+/packages/
+bin/
+obj/
+out/
+/.vscode/
+*.sln.DotSettings.user
+*.csproj.user
+.DS_Store
+.swp
