@@ -4,44 +4,48 @@ namespace TaxiPriceCalculator
 {
     public class TaxiPriceCalculatorService
     {
-        // todo take all this field to main or config
-        public double TotalFee { set; get; } = 0;
+        private readonly Trip _trip;
 
-        public int CalculateTotalFee(float totalDistance, int cholkingTime = 0)
+        public TaxiPriceCalculatorService(Trip trip)
         {
-            if (totalDistance <= 0)
+            _trip = trip;
+        }
+
+        double TotalFee { set; get; }
+
+        public int CalculateTotalFee()
+        {
+            if (_trip.Distance <= 0)
                 return 0;
-            
-            if (totalDistance <= TaxiPriceCalculatorConfig.STARTING_DISTRANCE)
-                return TaxiPriceCalculatorConfig.STARTING_FEE;
 
-            // all the logic will be done in ChokingTimeService
-//            var chokingTime = ChokingTimeService.GetCholkingTime();
+            if (_trip.Distance <= Config.STARTING_DISTRANCE)
+                return Config.STARTING_FEE;
 
-            return (int) AddStartFee().AddExtraOilFee().AddDistanceFee(totalDistance).AddChokingFee(cholkingTime).TotalFee;
+            return (int) AddStartFee().AddExtraOilFee().AddDistanceFee().AddJamFee().TotalFee;
         }
 
-        public TaxiPriceCalculatorService AddStartFee()
+        TaxiPriceCalculatorService AddStartFee()
         {
-            TotalFee += TaxiPriceCalculatorConfig.STARTING_FEE;
+            TotalFee += Config.STARTING_FEE;
             return this;
         }
 
-        public TaxiPriceCalculatorService AddDistanceFee(float distance)
+        TaxiPriceCalculatorService AddDistanceFee()
         {
-            TotalFee += (int) Math.Ceiling(distance - TaxiPriceCalculatorConfig.STARTING_DISTRANCE) * TaxiPriceCalculatorConfig.PRICE;
+            TotalFee += (int) Math.Ceiling(_trip.Distance - Config.STARTING_DISTRANCE) * Config.PRICE;
             return this;
         }
 
-        public TaxiPriceCalculatorService AddExtraOilFee()
+        TaxiPriceCalculatorService AddExtraOilFee()
         {
-            TotalFee += TaxiPriceCalculatorConfig.EXTRA_OIL_FEE;
+            TotalFee += Config.EXTRA_OIL_FEE;
             return this;
         }
 
-        public TaxiPriceCalculatorService AddChokingFee(int minutes)
+        TaxiPriceCalculatorService AddJamFee()
         {
-            TotalFee += minutes * TaxiPriceCalculatorConfig.CHOKING_FEE;
+            var minutes = TrafficJamFeeCalculator.GetJamMinutes(_trip.SpeedsPerSecond);
+            TotalFee += minutes * Config.TRAFFICE_JAM_FEE;
             return this;
         }
     }

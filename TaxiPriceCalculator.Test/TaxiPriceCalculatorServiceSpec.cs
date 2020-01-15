@@ -1,3 +1,4 @@
+using System.Linq;
 using Xunit;
 
 namespace TaxiPriceCalculator.Test
@@ -7,41 +8,37 @@ namespace TaxiPriceCalculator.Test
         [Fact]
         void should_return_starting_fee_when_distance_is_lower_than_starting_distance__kilometer()
         {
-            var taxiPriceCalculator = new TaxiPriceCalculatorService();
-            var cost = taxiPriceCalculator.CalculateTotalFee(2);
+            var taxiPriceCalculator = new TaxiPriceCalculatorService(new Trip(2));
+            var cost = taxiPriceCalculator.CalculateTotalFee();
             Assert.Equal(3, cost);
         }
 
         [Fact]
         void should_return_correct_fee_yuan_when_distance_is_over_starting_distance_kilometer()
         {
-            var taxiPriceCalculator = new TaxiPriceCalculatorService();
-            var cost = taxiPriceCalculator.CalculateTotalFee(2.1f);
+            var taxiPriceCalculator = new TaxiPriceCalculatorService(new Trip(2.1f));
+            var cost = taxiPriceCalculator.CalculateTotalFee();
             Assert.Equal(5, cost);
         }
 
         [Fact]
         void should_return_0_yuan_when_distance_is_0_kilometer()
         {
-            var taxiPriceCalculator = new TaxiPriceCalculatorService();
-            var cost = taxiPriceCalculator.CalculateTotalFee(0);
+            var taxiPriceCalculator = new TaxiPriceCalculatorService(new Trip(0));
+            var cost = taxiPriceCalculator.CalculateTotalFee();
             Assert.Equal(0, cost);
         }
 
         [Fact]
-        void should_return_correct_fee_when_over_base_distance_and_give_choking_minutes()
+        void should_return_correct_fee_when_has_traffic_jam()
         {
-            var taxiPriceCaluator = new TaxiPriceCalculatorService();
-            var cost = taxiPriceCaluator.CalculateTotalFee(2.5f, 20);
-            Assert.Equal(25, cost);
-        }
-        
-        [Fact]
-        void should_return_correct_fee_when_not_over_base_distance_and_give_choking_minutes()
-        {
-            var taxiPriceCaluator = new TaxiPriceCalculatorService();
-            var cost = taxiPriceCaluator.CalculateTotalFee(2.0f, 20);
-            Assert.Equal(3, cost);
+            var trip = new Trip(2 + 2 + 0.5f + 1.25f)
+            {
+                SpeedsPerSecond = Enumerable.Repeat(80f, 90).Concat(Enumerable.Repeat(120f, 60)).Concat(Enumerable.Repeat(30f, 60)).Concat(Enumerable.Repeat(90f, 50)).ToArray()
+            };
+            var taxiPriceCaluator = new TaxiPriceCalculatorService(trip);
+            var cost = taxiPriceCaluator.CalculateTotalFee();
+            Assert.Equal((3 + 4) + 1 + 1, cost);
         }
     }
 }
