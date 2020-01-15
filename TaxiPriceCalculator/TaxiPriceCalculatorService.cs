@@ -48,5 +48,12 @@ namespace TaxiPriceCalculator
             TotalFee += minutes * Config.TRAFFICE_JAM_FEE;
             return this;
         }
+
+        TaxiPriceCalculatorService AddNightFee()
+        {
+            var distance = TrafficJamFeeCalculator.GetNightDriveDistance();
+            TotalFee += distance * Config.NIGHT_DRIVE_FEE;
+            return this;
+        }
     }
 }

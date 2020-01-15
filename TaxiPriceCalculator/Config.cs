@@ -8,5 +8,6 @@ namespace TaxiPriceCalculator
         public static readonly int EXTRA_OIL_FEE = 1;
         public static readonly int TRAFFICE_JAM_FEE = 1;
         public static readonly int SPEED_BASELINE = 120;
+        public static readonly int NIGHT_DRIVE_FEE = 1;
     }
 }

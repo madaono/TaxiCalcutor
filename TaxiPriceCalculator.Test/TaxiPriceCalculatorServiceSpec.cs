@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Xunit;
 
@@ -39,6 +40,20 @@ namespace TaxiPriceCalculator.Test
             var taxiPriceCaluator = new TaxiPriceCalculatorService(trip);
             var cost = taxiPriceCaluator.CalculateTotalFee();
             Assert.Equal((3 + 4) + 1 + 1, cost);
+        }
+
+        [Fact]
+        void should_return_correct_fee_when_drive_during_23_to_6_clock()
+        {
+            var trip =  new Trip()
+            {
+                Distance = 50,
+                StartedAt = DateTime.Parse("23:00"),
+                FinishedAt = DateTime.Parse("23:59")
+            };
+            var taxiPriceCalculator = new TaxiPriceCalculatorService(trip);
+            var cost = taxiPriceCalculator.CalculateTotalFee();
+            Assert.Equal(3+48+1, cost);
         }
     }
 }

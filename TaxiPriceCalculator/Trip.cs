@@ -13,5 +13,9 @@ namespace TaxiPriceCalculator
         {
             Distance = distance;
         }
+
+        public Trip()
+        {
+        }
     }
 }
